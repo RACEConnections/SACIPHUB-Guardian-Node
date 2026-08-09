@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Protocol 01 | Cyber Global System</title>
+    <style>
+        :root {
+            --dark-slate: #0a0c10;
+            --panel-bg: #151921;
+            --text-main: #e0e4e8;
+            --border: #2a2f3a;
+            --gold: #d4af37;
+            --crypto-blue: #00bcd4;
+            --phoenix: #d32f2f;
+            --bird: #e0e0e0;
+            --eagle: #2e7d32;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Courier New', Courier, monospace; }
+        body { background-color: var(--dark-slate); color: var(--text-main); line-height: 1.6; padding: 20px; }
+
+        /* News Update Banner */
+        .news-dispatch { background: var(--crypto-blue); color: #000; padding: 15px; border-radius: 4px; font-weight: bold; font-size: 12px; margin-bottom: 20px; text-transform: uppercase; border-left: 5px solid #fff; }
+        .news-dispatch span { background: #000; color: var(--crypto-blue); padding: 3px 6px; margin-right: 10px; border-radius: 2px; }
+
+        .container { max-width: 900px; margin: 0 auto; display: flex; flex-direction: column; gap: 20px; }
+        
+        .panel { background: var(--panel-bg); border: 1px solid var(--border); padding: 25px; border-radius: 4px; }
+        .panel-title { color: var(--gold); font-size: 14px; text-transform: uppercase; border-bottom: 1px dashed var(--border); padding-bottom: 10px; margin-bottom: 15px; }
+
+        .manifesto-text { font-size: 13px; color: #a0aabf; margin-bottom: 15px; }
+        .highlight { color: #fff; font-weight: bold; }
+
+        /* Tiers Grid */
+        .tier-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; margin: 20px 0; }
+        .tier-box { padding: 15px; border: 1px solid var(--border); border-radius: 4px; text-align: center; font-size: 11px; font-weight: bold; text-transform: uppercase; }
+        .t-phoenix { border-top: 3px solid var(--phoenix); }
+        .t-bird { border-top: 3px solid var(--bird); }
+        .t-eagle { border-top: 3px solid var(--eagle); }
+        .tier-subtext { display: block; font-size: 9px; color: #8892b0; margin-top: 10px; font-style: italic; text-transform: none; }
+
+        /* Action Buttons */
+        .action-row { display: flex; gap: 15px; margin-top: 20px; }
+        .btn { flex: 1; text-align: center; padding: 15px; text-decoration: none; font-weight: bold; border-radius: 4px; font-size: 12px; text-transform: uppercase; transition: 0.3s; }
+        .btn-download { background: var(--phoenix); color: #fff; border: 1px solid var(--phoenix); }
+        .btn-download:hover { background: #b71c1c; }
+        .btn-vci { background: transparent; color: var(--crypto-blue); border: 1px solid var(--crypto-blue); }
+        .btn-vci:hover { background: rgba(0, 188, 212, 0.1); }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <!-- Version-less News Update -->
+        <div class="news-dispatch">
+            <span>[DISPATCH]</span> The Red Phoenix Cryptographic Edition is Live. Ledger exports are now hash-signed to prevent tampering. Download the offline terminal below.
+        </div>
+
+        <div class="panel">
+            <div class="panel-title">System Architecture Declaration</div>
+            
+            <p class="manifesto-text highlight">
+                The architecture of a cyber global system built on wealth supported by the RTC R.A.C.E LLC TREASURY CENTER.
+            </p>
+            <p class="manifesto-text">
+                Sync to the grassroot service free deployed on the secured vercel and cloudfare with utmost sincerity.
+            </p>
+
+            <div class="tier-grid">
+                <div class="tier-box t-phoenix">
+                    Red, Orange and Pink<br>Phoenix Tier
+                </div>
+                <div class="tier-box t-bird">
+                    Blue, White and Cloud<br>Bird Tier
+                </div>
+                <div class="tier-box t-eagle">
+                    Green, Yellow and Black<br>Eagle Tier
+                </div>
+            </div>
+
+            <div class="tier-subtext" style="text-align: center; font-size: 11px; margin-bottom: 20px;">
+                Not arranged in order placement. All Standard independently active. Fully packed, loaded and pre loaded.
+            </div>
+
+            <div class="action-row">
+                <!-- Links to the hardened HTML file for Nokia/Tablet download -->
+                <a href="../Guardian-Node/phoenix_hardened.html" download="SACIPHUB_Guardian_Node.html" class="btn btn-download">Initialize Local Node (Offline POS)</a>
+                <a href="../Command-Index/index.html" class="btn btn-vci">Access Command Index (VCI)</a>
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>
