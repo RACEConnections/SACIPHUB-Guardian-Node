@@ -230,6 +230,89 @@
             
             renderLedger();
             document.getElementById('itemCode').value = ""; document.getElementById('itemPrice').value = ""; clearCash();
+<script>
+        // --- SYSTEM DISPATCH PROTOCOL ---
+        const currentDeploymentVersion = 'phoenix_crypto_v5.1'; 
+        function checkNews() {
+            const hasAcknowledged = localStorage.getItem(currentDeploymentVersion);
+            if (!hasAcknowledged) { document.getElementById('newsBanner').style.display = 'flex'; }
+            document.getElementById('session-hash').innerText = "Session Anchor: 0x" + Math.random().toString(16).substr(2, 16).toUpperCase();
+        }
+        function acknowledgeNews() {
+            localStorage.setItem(currentDeploymentVersion, 'true');
+            document.getElementById('newsBanner').style.display = 'none';
+        }
+        window.onload = checkNews;
+
+        // DATA PERSISTENCE
+        let ledgerData = JSON.parse(localStorage.getItem('phoenix_secure_ledger')) || [];
+
+        function renderLedger() {
+            const feed = document.getElementById('feed-container');
+            feed.innerHTML = '';
+            ledgerData.slice().reverse().forEach(log => {
+                const item = document.createElement('div');
+                item.className = 'activity-item';
+                
+                // Pure Data to HTML Render Logic (Keeps JSON Payload Clean)
+                let statusHtml = "";
+                if (log.status.includes('<span')) { 
+                    statusHtml = log.status; // Backward compatibility for old logs
+                } else {
+                    if (log.status === "VOID") statusHtml = `<span class="log-void">[INTERCEPTED] Payout Denied</span>`;
+                    else if (log.status === "CLEARED") statusHtml = `<span class="log-cleared">[CLEARED] Change: ₦${log.diff}</span>`;
+                    else statusHtml = `<span class="log-owing">[ALERT] Shortfall: ₦${Math.abs(log.diff)}</span>`;
+                }
+
+                item.innerHTML = `<div class="log-header"><strong>${log.code}</strong><span>${log.time}</span></div>
+                                  <div style="color:#8892b0">Payout: ₦${log.price} | Tendered: ₦${log.recv} <br> ${statusHtml}</div>`;
+                feed.appendChild(item);
+            });
+        }
+
+        // POS LOGIC
+        let cashReceived = 0;
+        function formatNaira(amount) { return "₦" + amount.toLocaleString('en-US'); }
+        function addCash(amount) { cashReceived += amount; document.getElementById('receivedDisplay').innerText = formatNaira(cashReceived); calculateChange(); }
+        function clearCash() { cashReceived = 0; document.getElementById('receivedDisplay').innerText = formatNaira(cashReceived); calculateChange(); }
+        
+        function calculateChange() {
+            const price = parseInt(document.getElementById('itemPrice').value);
+            const statusDisplay = document.getElementById('changeDisplay');
+            if (isNaN(price)) { statusDisplay.innerText = "Awaiting Price..."; statusDisplay.style.color = "#889"; return; }
+            if (price === 0) { statusDisplay.innerText = "ZERO PAYOUT / PENALTY"; statusDisplay.style.color = "var(--alert)"; return; }
+            const diff = cashReceived - price;
+            if (diff > 0) { statusDisplay.innerText = `CHANGE DUE: ${formatNaira(diff)}`; statusDisplay.style.color = "var(--liquid)"; }
+            else if (diff === 0) { statusDisplay.innerText = `EXACT AMOUNT`; statusDisplay.style.color = "var(--liquid)"; }
+            else { statusDisplay.innerText = `SHORTFALL: ${formatNaira(Math.abs(diff))}`; statusDisplay.style.color = "var(--alert)"; }
+        }
+
+        function logTransaction() {
+            const code = document.getElementById('itemCode').value.toUpperCase() || "UNKNOWN";
+            const price = parseInt(document.getElementById('itemPrice').value);
+            if (isNaN(price)) return alert("Enter valid price or 0 for void.");
+            
+            const diff = cashReceived - price;
+            const now = new Date();
+            const time = now.getHours().toString().padStart(2, '0') + ':' + now.getMinutes().toString().padStart(2, '0');
+            
+            // Generate clean data tags, not HTML
+            let cleanStatus = price === 0 ? "VOID" : (diff >= 0 ? "CLEARED" : "SHORTFALL");
+            
+            ledgerData.push({ 
+                code: code, 
+                price: price, 
+                recv: cashReceived, 
+                diff: diff, 
+                status: cleanStatus, 
+                time: time, 
+                salt: Math.random().toString(36).substring(2, 8) 
+            });
+            
+            localStorage.setItem('phoenix_secure_ledger', JSON.stringify(ledgerData));
+            
+            renderLedger();
+            document.getElementById('itemCode').value = ""; document.getElementById('itemPrice').value = ""; clearCash();
         }
 
         // CRYPTOGRAPHIC EXPORT LOGIC
@@ -240,17 +323,14 @@
             statusBox.style.color = "var(--crypto-blue)";
             
             try {
-                // Prepare data for hashing
                 const payloadString = JSON.stringify(ledgerData);
                 const encoder = new TextEncoder();
                 const data = encoder.encode(payloadString);
                 
-                // Generate SHA-256 Hash using Web Crypto API
                 const hashBuffer = await crypto.subtle.digest('SHA-256', data);
                 const hashArray = Array.from(new Uint8Array(hashBuffer));
                 const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
                 
-                // Wrap ledger in signed envelope
                 const secureExport = {
                     timestamp: new Date().toISOString(),
                     signature: hashHex,
