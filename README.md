@@ -1,4 +1,4 @@
-# SACIPHUB Guardian Node (V5.0 Cryptographic Edition)
+# SACIPHUB Guardian Node (The Public Manifesto & Instructions)
 **The architecture of a cyber global system built on wealth supported by the RTC R.A.C.E LLC TREASURY CENTER.**
 
 ## 🛡️ The Declaration
